@@ -1,0 +1,64 @@
+<html>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+    <script src="datamaps.world.hires.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="worldmap.css">
+  <body style="background-color: #48C7ED">
+    <div class="container main">
+      <div class="row" style="margin-top: -30%">
+        <div class="col">
+          <div id="container" class="map-container">
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="countrycode.js" type="application/javascript"></script>
+  <script src="worldmap.js" type="application/javascript"></script>
+  <script>
+    var alpha3 = iso_codes.reduce((prev, next) => {
+      prev[next.name] = next.alpha3
+      prev[next.altName] = next.alpha3
+      prev[next.shortName] = next.alpha3
+      return prev
+    }, {})
+
+    const rows = Math.floor(countries.length / 4 + 0.5);
+    for (var r = 0; r < rows; r++) {
+      var row = "";
+      for (var c = 0; c < 4; c++) {
+        var i = c * rows + r;
+        var country = countries[i] || ''
+        row += "<div class='col-3 county'>" + country + "</div>"
+      }
+      $(".countries" ).append( "<div class='row'>" + row + "</div>");
+    }
+
+    for (var r = 0; r < affilates.length; r++) {
+      var row = "<div class='col'>" + affilates[r] + "</div>"
+      $(".affilates" ).append( "<div class='row'>" + row + "</div>");
+    }
+
+    var options = {
+      scope: 'world',
+      element: document.getElementById('container'),
+      projection: 'mercator',
+      height: 600,
+      fills: {
+        defaultFill: '#b5d334',
+        work: 'rgba(0, 169,79, 1)',
+      },
+      data: countries.reduce((prev, next) => {
+        if (alpha3[next]) {
+          prev[alpha3[next]] = { fillKey: 'work' };
+        }
+        return prev;
+      }, {})
+    }
+    var map = new Datamap(options);
+  </script>
+</html>
